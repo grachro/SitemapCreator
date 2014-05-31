@@ -72,14 +72,14 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		return ok(index.render("Your new application is ready.", new Form(InputForm.class), appLoader.getSiteLoader()));
+		return ok(index.render("Your new application is ready.", new Form(InputForm.class), appLoader.getSiteLoader(),appLoader.isLoading()));
 	}
 
 	public static Result load() {
 		Form<InputForm> f = form(InputForm.class).bindFromRequest();
 		System.out.println("submitBtn::" + f.get().submitBtn);
 		if (f.hasErrors()) {
-			return badRequest(index.render("ERROR", form(InputForm.class), appLoader.getSiteLoader()));
+			return badRequest(index.render("ERROR", form(InputForm.class), appLoader.getSiteLoader(),appLoader.isLoading()));
 		}
 
 		if (appLoader.isLoading()) {
@@ -99,8 +99,12 @@ public class Application extends Controller {
 			};
 			Thread t = new Thread(r);
 			t.start();
-
-			return ok(index.render(msg, f, appLoader.getSiteLoader()));
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ok(index.render(msg, f, appLoader.getSiteLoader(),appLoader.isLoading()));
 		} else if ("download TSV".equals(data.submitBtn)) {
 			return ok(appLoader.getSavefile());
 		} else if ("download sitemap.xml".equals(data.submitBtn)) {
@@ -109,7 +113,7 @@ public class Application extends Controller {
 			return ok(sitemapFile);
 		} else {
 			String msg = "";
-			return ok(index.render(msg, f, appLoader.getSiteLoader()));
+			return ok(index.render(msg, f, appLoader.getSiteLoader(),appLoader.isLoading()));
 		}
 
 	}
@@ -117,7 +121,7 @@ public class Application extends Controller {
 	private static Result pleasWaitResutl() {
 		String msg = "loading now. please wait.";
 		Form<InputForm> f = form(InputForm.class).bindFromRequest();
-		return ok(index.render(msg, f, appLoader.getSiteLoader()));
+		return ok(index.render(msg, f, appLoader.getSiteLoader(),appLoader.isLoading()));
 	}
 
 }
