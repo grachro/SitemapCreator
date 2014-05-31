@@ -1,5 +1,11 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.grachro.sitemap.LoadUrls;
+
 import play.*;
 import play.data.*;
 import static play.data.Form.*;
@@ -10,13 +16,13 @@ import views.html.*;
 public class Application extends Controller {
 
     public static class InputForm {
-        public String message;
+        public String url;
     }
     
+    public static List<String> EMPTY_LIST = new ArrayList<String>();
     
     public static Result index() {
-        return ok(index.render("Your new application is ready.",new Form(InputForm.class)));
-    	//return ok(index.render("Your new application is ready." ));
+        return ok(index.render("Your new application is ready.",new Form(InputForm.class),EMPTY_LIST));
     }
 
     public static Result send() {
@@ -24,12 +30,13 @@ public class Application extends Controller {
     	if(!f.hasErrors()){
     		
     		InputForm data = f.get();
-    		String msg = "you typed: " + data.message;
-    		return ok(index.render(msg,f));
-    		//return ok(index.render(msg ));
+    		String msg = "target URL is  " + data.url;
+    		
+    		List<String> resultUrls = new LoadUrls().load(1, data.url);
+    		
+    		return ok(index.render(msg,f, resultUrls));
     	}else{
-    		return badRequest(index.render("ERROR",form(InputForm.class)));
-    		//return badRequest(index.render("ERROR" ));
+    		return badRequest(index.render("ERROR",form(InputForm.class),EMPTY_LIST));
     	}
     }
 }

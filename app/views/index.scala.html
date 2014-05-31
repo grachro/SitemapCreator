@@ -1,11 +1,15 @@
-@(message: String, form1:Form[Application.InputForm])
+@(message: String, form1:Form[Application.InputForm], resultUrls:List[String])
 
 @main("SitemapCreator") {
 	<h1>SitemapCreator</h1>
+	<p>@message</p>
 	@helper.form(action = routes.Application.send) {
 		@(helper.inputText (
-			field = form1("message")
+			field = form1("url")
 		))
 		<input type="submit">
 	}
+	
+	<h2>result</h2>
+	<p>@resultUrls</p>
 }
