@@ -2,8 +2,9 @@
 
 @main("SitemapCreator") {
 	<h1>SitemapCreator</h1>
-	<p>@message</p>
-	@helper.form(action = routes.Application.send) {
+
+	<div style="border: solid 1px black;">
+	@helper.form(action = routes.Application.load) {
 		@(helper.inputText (
 			field = form1("url")
 		))
@@ -11,7 +12,17 @@
 			field = form1("deep"),
 			options = Seq("0" ->"0", "1"->"1", "2" ->"2", "3" ->"3" )
 		))
-		<input type="submit">
+		<input type="submit" value="load">
 	}
+	</div>
 
+	<p>@message</p>
+	
+	@helper.form(action = routes.Application.downloadTsv) {
+		<input type="submit" value="download TSV">
+	}
+	
+	@helper.form(action = routes.Application.downloadSitemap) {
+		<input type="submit" value="download sitemap.xml">
+	}
 }
