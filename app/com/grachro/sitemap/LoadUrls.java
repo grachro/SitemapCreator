@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -15,10 +15,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class LoadUrls {
-	private Set<String> loaded = new LinkedHashSet<String>();
+	private Map<String, LoadedUrl> loaded = new LinkedHashMap<String, LoadedUrl>();
 	private List<String> errUrls = new ArrayList<String>();
 
-	public List<String> load(int maxDeep, String url) {
+	public List<LoadedUrl> load(int maxDeep, String url) {
 		try {
 			load(maxDeep, 0, url);
 
@@ -29,7 +29,7 @@ public class LoadUrls {
 			}
 			System.out.println("=====================");
 
-			return new ArrayList<String>(loaded);
+			return new ArrayList<LoadedUrl>(loaded.values());
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -46,7 +46,15 @@ public class LoadUrls {
 		System.out.println(deep + "\t" + url + "\t" + document.title() + "\t" + getMetaDescription(document) + "\t" + connectResult.getTime() + "\t"
 				+ document.html().length());
 
-		loaded.add(url);
+		LoadedUrl lUrl = new LoadedUrl();
+		lUrl.deep = deep;
+		lUrl.url = url;
+		lUrl.title = document.title();
+		lUrl.description = getMetaDescription(document);
+		lUrl.loadTime = connectResult.getTime();
+		lUrl.textLength = document.html().length();
+
+		loaded.put(url, lUrl);
 
 		if (deep >= maxDeep) {
 			return;
@@ -95,7 +103,7 @@ public class LoadUrls {
 
 				childUrl = protocol + "://" + host + path + "/" + childUrl;
 			}
-			if (loaded.contains(childUrl)) {
+			if (loaded.containsKey(childUrl)) {
 				continue;
 			}
 

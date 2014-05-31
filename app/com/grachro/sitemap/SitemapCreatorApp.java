@@ -13,7 +13,7 @@ public class SitemapCreatorApp {
 	}
 
 	public void execute(String rootUrl, int maxDeep, String filePath) {
-		List<String> urls = new LoadUrls().load(maxDeep, rootUrl);
+		List<LoadedUrl> urls = new LoadUrls().load(maxDeep, rootUrl);
 		new SitemapXml().create(urls, filePath);
 	}
 }
