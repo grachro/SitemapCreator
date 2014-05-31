@@ -18,6 +18,9 @@
 			<input type="submit" value="load" name="submitBtn">
 			</div>
 			<br>
+		} else {
+			<input type="hidden"  name="url" value="@form1.get().url" />
+			<input type="hidden" name="deep" value="@form1.get().deep" />
 		}
 		<p>@message</p>
 		@if(!siteLoader.getResult().isEmpty()) {

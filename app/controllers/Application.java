@@ -72,7 +72,7 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		return ok(index.render("Your new application is ready.", new Form(InputForm.class), appLoader.getSiteLoader(),appLoader.isLoading()));
+		return load();
 	}
 
 	public static Result load() {
