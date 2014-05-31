@@ -5,6 +5,9 @@
 # Home page
 GET     /                              controllers.Application.index()
 POST   /load                       controllers.Application.load()
+
+
+POST   /reflesh         controllers.Application.reflesh()
 POST   /downloadTsv         controllers.Application.downloadTsv()
 POST   /downloadSitemap   controllers.Application.downloadSitemap()
 

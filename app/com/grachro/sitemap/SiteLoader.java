@@ -16,6 +16,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import scala.collection.mutable.StringBuilder;
+
 public class SiteLoader {
 	private Map<String, LoadedSite> loaded = new LinkedHashMap<String, LoadedSite>();
 	private List<String> errUrls = new ArrayList<String>();
@@ -159,6 +161,15 @@ public class SiteLoader {
 
 	public List<LoadedSite> getResult() {
 		return new ArrayList<LoadedSite>(loaded.values());
+	}
+
+	public String toText() {
+		StringBuilder sb = new StringBuilder();
+		for (LoadedSite url : loaded.values()) {
+			sb.append(url.saveLine());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 	public void save(File file) {

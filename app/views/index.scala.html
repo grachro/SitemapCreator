@@ -1,9 +1,9 @@
-@(message: String, form1:Form[Application.InputForm], resultUrls:List[com.grachro.sitemap.LoadedSite])
+@(message: String, form1:Form[Application.InputForm], siteLoader:com.grachro.sitemap.SiteLoader)
 
 @main("SitemapCreator") {
 	<h1>SitemapCreator</h1>
 
-	<div style="border: solid 1px black;">
+	<div style="border: solid 1px black; padding: 10px;">
 	@helper.form(action = routes.Application.load) {
 		@(helper.inputText (
 			field = form1("url")
@@ -18,6 +18,10 @@
 
 	<p>@message</p>
 	
+		@helper.form(action = routes.Application.reflesh) {
+		<input type="submit" value="reflesh">
+	}
+	
 	@helper.form(action = routes.Application.downloadTsv) {
 		<input type="submit" value="download TSV">
 	}
@@ -25,4 +29,6 @@
 	@helper.form(action = routes.Application.downloadSitemap) {
 		<input type="submit" value="download sitemap.xml">
 	}
+	
+	<pre style="font-size: 10px;">@siteLoader.toText()</pre>
 }

@@ -13,6 +13,7 @@ import views.html.index;
 
 import com.grachro.sitemap.LoadedSite;
 import com.grachro.sitemap.SiteLoader;
+import com.grachro.sitemap.SitemapXml;
 
 public class Application extends Controller {
 
@@ -41,6 +42,15 @@ public class Application extends Controller {
 			return new File(tempDir, "save.tsv");
 		}
 
+		public synchronized File getSitemapFile() {
+			File tempDir = new File("temp");
+			if (!tempDir.exists()) {
+				tempDir.mkdirs();
+			}
+
+			return new File(tempDir, "sitemap.xml");
+		}
+
 		public boolean isLoading() {
 			System.out.println("##########################");
 			System.out.println("##########################");
@@ -49,6 +59,10 @@ public class Application extends Controller {
 			System.out.println("##########################");
 			return this.loading;
 		}
+
+		public SiteLoader getSiteLoader() {
+			return this.loader;
+		}
 	}
 
 	public static class InputForm {
@@ -56,10 +70,8 @@ public class Application extends Controller {
 		public int deep;
 	}
 
-	public static List<LoadedSite> EMPTY_LIST = new ArrayList<LoadedSite>();
-
 	public static Result index() {
-		return ok(index.render("Your new application is ready.", new Form(InputForm.class), EMPTY_LIST));
+		return ok(index.render("Your new application is ready.", new Form(InputForm.class), appLoader.getSiteLoader()));
 	}
 
 	public static Result load() {
@@ -81,12 +93,21 @@ public class Application extends Controller {
 			Thread t = new Thread(r);
 			t.start();
 
-			return ok(index.render(msg, f, EMPTY_LIST));
+			return ok(index.render(msg, f, appLoader.getSiteLoader()));
 		} else {
-			return badRequest(index.render("ERROR", form(InputForm.class), EMPTY_LIST));
+			return badRequest(index.render("ERROR", form(InputForm.class), appLoader.getSiteLoader()));
 		}
 	}
 
+	public static Result reflesh(){
+		if (appLoader.isLoading()) {
+			return pleasWaitResutl();
+		}
+		String msg = "";
+		Form<InputForm> f = form(InputForm.class).bindFromRequest();
+		return ok(index.render(msg, f, appLoader.getSiteLoader()));
+	}
+	
 	public static Result downloadTsv() {
 		if (appLoader.isLoading()) {
 			return pleasWaitResutl();
@@ -99,14 +120,18 @@ public class Application extends Controller {
 		if (appLoader.isLoading()) {
 			return pleasWaitResutl();
 		}
-		return ok(appLoader.getSavefile());
+
+		File sitemapFile = appLoader.getSitemapFile();
+		new SitemapXml().create(appLoader.getSiteLoader().getResult(), sitemapFile.getAbsolutePath());
+
+		return ok(sitemapFile);
 
 	}
 
 	private static Result pleasWaitResutl() {
 		String msg = "loading now. please wait.";
 		Form<InputForm> f = form(InputForm.class).bindFromRequest();
-		return ok(index.render(msg, f, EMPTY_LIST));
+		return ok(index.render(msg, f, appLoader.getSiteLoader()));
 	}
 
 }
