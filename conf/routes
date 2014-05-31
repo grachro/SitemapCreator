@@ -6,10 +6,5 @@
 GET     /                              controllers.Application.index()
 POST   /load                       controllers.Application.load()
 
-
-POST   /reflesh         controllers.Application.reflesh()
-POST   /downloadTsv         controllers.Application.downloadTsv()
-POST   /downloadSitemap   controllers.Application.downloadSitemap()
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

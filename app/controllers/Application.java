@@ -66,6 +66,7 @@ public class Application extends Controller {
 	}
 
 	public static class InputForm {
+		public String submitBtn;
 		public String url;
 		public int deep;
 	}
@@ -76,12 +77,18 @@ public class Application extends Controller {
 
 	public static Result load() {
 		Form<InputForm> f = form(InputForm.class).bindFromRequest();
-		if (!f.hasErrors()) {
-			if (appLoader.isLoading()) {
-				return pleasWaitResutl();
-			}
+		System.out.println("submitBtn::" + f.get().submitBtn);
+		if (f.hasErrors()) {
+			return badRequest(index.render("ERROR", form(InputForm.class), appLoader.getSiteLoader()));
+		}
 
-			final InputForm data = f.get();
+		if (appLoader.isLoading()) {
+			return pleasWaitResutl();
+		}
+
+		final InputForm data = f.get();
+
+		if ("load".equals(data.submitBtn)) {
 			String msg = "target URL is  " + data.url;
 
 			Runnable r = new Runnable() {
@@ -94,37 +101,16 @@ public class Application extends Controller {
 			t.start();
 
 			return ok(index.render(msg, f, appLoader.getSiteLoader()));
+		} else if ("download TSV".equals(data.submitBtn)) {
+			return ok(appLoader.getSavefile());
+		} else if ("download sitemap.xml".equals(data.submitBtn)) {
+			File sitemapFile = appLoader.getSitemapFile();
+			new SitemapXml().create(appLoader.getSiteLoader().getResult(), sitemapFile.getAbsolutePath());
+			return ok(sitemapFile);
 		} else {
-			return badRequest(index.render("ERROR", form(InputForm.class), appLoader.getSiteLoader()));
+			String msg = "";
+			return ok(index.render(msg, f, appLoader.getSiteLoader()));
 		}
-	}
-
-	public static Result reflesh(){
-		if (appLoader.isLoading()) {
-			return pleasWaitResutl();
-		}
-		String msg = "";
-		Form<InputForm> f = form(InputForm.class).bindFromRequest();
-		return ok(index.render(msg, f, appLoader.getSiteLoader()));
-	}
-	
-	public static Result downloadTsv() {
-		if (appLoader.isLoading()) {
-			return pleasWaitResutl();
-		}
-		return ok(appLoader.getSavefile());
-
-	}
-
-	public static Result downloadSitemap() {
-		if (appLoader.isLoading()) {
-			return pleasWaitResutl();
-		}
-
-		File sitemapFile = appLoader.getSitemapFile();
-		new SitemapXml().create(appLoader.getSiteLoader().getResult(), sitemapFile.getAbsolutePath());
-
-		return ok(sitemapFile);
 
 	}
 
