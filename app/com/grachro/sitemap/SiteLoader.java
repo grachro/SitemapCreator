@@ -1,5 +1,6 @@
 package com.grachro.sitemap;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,17 +9,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class LoadUrls {
+public class SiteLoader {
 	private Map<String, LoadedUrl> loaded = new LinkedHashMap<String, LoadedUrl>();
 	private List<String> errUrls = new ArrayList<String>();
 
-	public List<LoadedUrl> load(int maxDeep, String url) {
+	public void load(int maxDeep, String url) {
 		try {
 			load(maxDeep, 0, url);
 
@@ -29,7 +31,6 @@ public class LoadUrls {
 			}
 			System.out.println("=====================");
 
-			return new ArrayList<LoadedUrl>(loaded.values());
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -156,6 +157,24 @@ public class LoadUrls {
 		return des;
 	}
 
+	public List<LoadedUrl> getResult() {
+		return new ArrayList<LoadedUrl>(loaded.values());
+	}
+
+	public void save(File file) {
+		try {
+			List<String> lines = new ArrayList<String>();
+			for (LoadedUrl url : loaded.values()) {
+				lines.add(url.saveLine());
+			}
+
+			FileUtils.writeLines(file, "UTF-8", lines);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+
+	}
+
 	private static class ConnectResult {
 
 		private final Document document;
@@ -174,6 +193,6 @@ public class LoadUrls {
 		public long getTime() {
 			return time;
 		}
-
 	}
+
 }

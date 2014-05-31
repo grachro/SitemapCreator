@@ -11,5 +11,10 @@
 	}
 	
 	<h2>result</h2>
-	<p>@resultUrls</p>
+	<textarea>
+		@for(urlData <- resultUrls) {
+			@urlData.deep + "\t" + "@urlData.url
+		}
+		
+	</textarea>
 }
