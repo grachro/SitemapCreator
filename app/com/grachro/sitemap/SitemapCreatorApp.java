@@ -14,7 +14,7 @@ public class SitemapCreatorApp {
 	public void execute(String rootUrl, int maxDeep, String filePath) {
 		SiteLoader loader = new SiteLoader();
 		loader.load(maxDeep, rootUrl);
-		List<LoadedUrl> urls = loader.getResult();
+		List<LoadedSite> urls = loader.getResult();
 
 		new SitemapXml().create(urls, filePath);
 	}

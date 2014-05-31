@@ -17,7 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class SiteLoader {
-	private Map<String, LoadedUrl> loaded = new LinkedHashMap<String, LoadedUrl>();
+	private Map<String, LoadedSite> loaded = new LinkedHashMap<String, LoadedSite>();
 	private List<String> errUrls = new ArrayList<String>();
 
 	public void load(int maxDeep, String url) {
@@ -47,7 +47,7 @@ public class SiteLoader {
 		System.out.println(deep + "\t" + url + "\t" + document.title() + "\t" + getMetaDescription(document) + "\t" + connectResult.getTime() + "\t"
 				+ document.html().length());
 
-		LoadedUrl lUrl = new LoadedUrl();
+		LoadedSite lUrl = new LoadedSite();
 		lUrl.deep = deep;
 		lUrl.url = url;
 		lUrl.title = document.title();
@@ -157,14 +157,14 @@ public class SiteLoader {
 		return des;
 	}
 
-	public List<LoadedUrl> getResult() {
-		return new ArrayList<LoadedUrl>(loaded.values());
+	public List<LoadedSite> getResult() {
+		return new ArrayList<LoadedSite>(loaded.values());
 	}
 
 	public void save(File file) {
 		try {
 			List<String> lines = new ArrayList<String>();
-			for (LoadedUrl url : loaded.values()) {
+			for (LoadedSite url : loaded.values()) {
 				lines.add(url.saveLine());
 			}
 

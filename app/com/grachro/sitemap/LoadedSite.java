@@ -1,6 +1,6 @@
 package com.grachro.sitemap;
 
-public class LoadedUrl {
+public class LoadedSite {
 	public int deep;
 	public String url;
 	public String title;
@@ -9,6 +9,6 @@ public class LoadedUrl {
 	public int textLength;
 
 	public String saveLine() {
-		return deep + "¥t" + url + "¥t" + title + "¥t" + description + "¥t" + loadTime + "¥t" + textLength;
+		return deep + "\t" + url + "\t" + title + "\t" + description + "\t" + loadTime + "\t" + textLength;
 	}
 }
