@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 public class SitemapXml {
 
-	public void create(List<String> urls, String filePath) {
+	public void create(List<LoadedSite> urls, String filePath) {
 		try {
 			Document xmlDocument = createDocument(urls);
 			write(xmlDocument, filePath);
@@ -26,7 +26,7 @@ public class SitemapXml {
 		}
 	}
 
-	private Document createDocument(List<String> urls) throws ParserConfigurationException {
+	private Document createDocument(List<LoadedSite> urls) throws ParserConfigurationException {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -35,7 +35,7 @@ public class SitemapXml {
 		Element root = document.createElement("urlset");
 		document.appendChild(root);
 
-		for (String url : urls) {
+		for (LoadedSite url : urls) {
 			addUrl(document, root, url);
 		}
 
@@ -43,13 +43,13 @@ public class SitemapXml {
 
 	}
 
-	private void addUrl(Document document, Element root, String url) {
+	private void addUrl(Document document, Element root, LoadedSite url) {
 		Element urlElm = document.createElement("url");
 		root.appendChild(urlElm);
 
 		Element locElm = document.createElement("loc");
 		urlElm.appendChild(locElm);
-		locElm.setTextContent(url);
+		locElm.setTextContent(url.url);
 	}
 
 	private void write(Document document, String filePath) throws TransformerException {

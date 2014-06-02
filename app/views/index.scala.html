@@ -1,0 +1,38 @@
+@(message: String, form1:Form[Application.InputForm], siteLoader:com.grachro.sitemap.SiteLoader,isLoading:Boolean)
+
+@main("SitemapCreator") {
+	<h1>SitemapCreator</h1>
+
+
+	@helper.form(action = routes.Application.load) {
+		
+		@if(!isLoading) {
+			<div style="border: solid 1px black; padding: 10px;">
+			@(helper.inputText (
+				field = form1("url")
+			))
+			@(helper.select(
+				field = form1("deep"),
+				options = Seq("0" ->"0", "1"->"1", "2" ->"2", "3" ->"3" )
+			))
+			<input type="submit" value="load" name="submitBtn">
+			</div>
+			<br>
+		} else {
+			<input type="hidden"  name="url" value="@form1.get().url" />
+			<input type="hidden" name="deep" value="@form1.get().deep" />
+		}
+		<p>@message</p>
+		@if(!siteLoader.getResult().isEmpty()) {
+			<input type="submit" value="reflesh" name="submitBtn"><br>
+		}
+		@if(!isLoading && !siteLoader.getResult().isEmpty()) {
+			<input type="submit" value="download TSV" name="submitBtn"><br>
+			<input type="submit" value="download sitemap.xml" name="submitBtn">
+		}
+	}
+
+ 
+	
+	<pre style="font-size: 10px;">@siteLoader.toText()</pre>
+}

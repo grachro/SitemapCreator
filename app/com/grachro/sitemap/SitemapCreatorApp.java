@@ -3,7 +3,6 @@ package com.grachro.sitemap;
 import java.io.IOException;
 import java.util.List;
 
-
 public class SitemapCreatorApp {
 	public static void main(String[] args) throws IOException {
 		String rootUrl = args[0];
@@ -13,7 +12,10 @@ public class SitemapCreatorApp {
 	}
 
 	public void execute(String rootUrl, int maxDeep, String filePath) {
-		List<String> urls = new LoadUrls().load(maxDeep, rootUrl);
+		SiteLoader loader = new SiteLoader();
+		loader.load(maxDeep, rootUrl);
+		List<LoadedSite> urls = loader.getResult();
+
 		new SitemapXml().create(urls, filePath);
 	}
 }
