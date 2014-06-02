@@ -40,14 +40,16 @@ public class SiteLoader {
 
 	private void load(int maxDeep, int deep, String url) throws IOException {
 
+		URL parentUrl = new URL(url);
 		ConnectResult connectResult = getDocument(url);
 		if (connectResult == null) {
 			return;
 		}
 		Document document = connectResult.getDocument();
 
-		System.out.println(deep + "\t" + url + "\t" + document.title() + "\t" + getMetaDescription(document) + "\t" + connectResult.getTime() + "\t"
-				+ document.html().length());
+		System.out.println(deep + "\t" + url + "\t" + document.title() + "\t"
+				+ getMetaDescription(document) + "\t" + connectResult.getTime()
+				+ "\t" + document.html().length());
 
 		LoadedSite lUrl = new LoadedSite();
 		lUrl.deep = deep;
@@ -78,7 +80,7 @@ public class SiteLoader {
 			}
 
 			if (childUrl.startsWith("http://")) {
-			} else if (childUrl.startsWith("http://")) {
+			} else if (childUrl.startsWith("https://")) {
 			} else if (childUrl.startsWith("//")) {
 				String protocol = new URL(url).getProtocol();
 				childUrl = protocol + ":" + childUrl;
@@ -89,7 +91,8 @@ public class SiteLoader {
 				String host = urlObj.getHost();
 				String path = urlObj.getPath();
 
-				childUrl = protocol + "://" + host + path + childUrl.substring(1);
+				childUrl = protocol + "://" + host + path
+						+ childUrl.substring(1);
 			} else if (childUrl.startsWith("/")) {
 
 				URL urlObj = new URL(url);
@@ -106,6 +109,14 @@ public class SiteLoader {
 
 				childUrl = protocol + "://" + host + path + "/" + childUrl;
 			}
+
+			URL oChildUrl = new URL(childUrl);
+			if (!parentUrl.getHost().equals(oChildUrl.getHost())) {
+				System.out.println("skip cheild page:parent=" + parentUrl
+						+ ",child=" + oChildUrl);
+				continue;
+			}
+
 			if (loaded.containsKey(childUrl)) {
 				continue;
 			}
